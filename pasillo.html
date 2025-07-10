@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Interacción SVG Adaptable</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zona-interactiva {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .zona-interactiva path {
+      fill: transparent;
+      stroke: transparent;
+      pointer-events: visiblePainted;
+      cursor: pointer;
+      transition: fill 0.2s ease;
+    }
+
+    .zona-interactiva path:hover {
+      fill: rgba(255, 255, 255, 0.177);
+      stroke: #ffaa0000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+
+    .imagen-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .imagen-flotante img {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contenedor">
+  <img class="fondo" src="Resources/Scenarios/pasillo.png" alt="Fondo">
+  
+  <!-- volveratraspasillo -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'escaleras.html'">
+      <path d="M15560 5400 l0 -5400 1820 0 1820 0 0 5400 0 5400 -1820 0 -1820 0 0 -5400z"/>
+    </g>
+  </svg>
+
+  <!-- cuadro -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'escaleras.html'">
+      <path d="M4427 9361 l-117 -36 0 -2654 c0 -1460 2 -2657 5 -2659 3 -3 68 -16 146 -29 l140 -24 1187 410 c653 225 1195 413 1205 416 16 7 17 83 17 1410 l0 1402 -1221 898 c-672 493 -1226 898 -1233 900 -6 1 -64 -14 -129 -34z"/>
+    </g>
+  </svg>
+
+  <!-- Nota -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="mostrarImagen('Resources/Biografia/03.png')">
+      <path d="M7255 3989 c-77 -50 -144 -95 -150 -101 -10 -9 2 -21 82 -84 l31 -25 42 26 c22 14 57 40 78 59 20 18 78 61 127 96 50 35 92 65 94 67 10 7 -12 16 -71 28 -35 8 -70 16 -78 19 -9 4 -71 -30 -155 -85z"/>
+    </g>
+  </svg>
+
+  <!-- Biografia -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="mostrarImagen('Resources/Notas/03.png')">
+      <path d="M7611 1577 l-113 -31 -99 -205 c-55 -113 -98 -208 -97 -212 3 -6 583 142 593 152 3 3 -10 41 -29 85 -18 43 -49 116 -67 161 -27 66 -38 82 -54 82 -11 -1 -71 -15 -134 -32z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Overlay e imagen flotante -->
+<div id="notaOverlay" class="overlay" onclick="cerrarImagen()"></div>
+<div id="imagenNota" class="imagen-flotante" onclick="cerrarImagen()">
+  <img id="imgNota" src="" alt="Imagen ampliada">
+</div>
+
+<!-- Script -->
+<script>
+  const overlay = document.getElementById('notaOverlay');
+  const imagen = document.getElementById('imagenNota');
+  const imgTag = document.getElementById('imgNota');
+
+  const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+
+  abrirSonido.preload = "auto";
+  cerrarSonido.preload = "auto";
+
+  function mostrarImagen(ruta) {
+    imgTag.src = ruta;
+    imagen.style.display = 'block';
+    overlay.style.display = 'block';
+
+    try {
+      abrirSonido.currentTime = 0;
+      abrirSonido.play();
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+
+  function cerrarImagen() {
+    imagen.style.display = 'none';
+    overlay.style.display = 'none';
+
+    try {
+      cerrarSonido.currentTime = 0;
+      cerrarSonido.play();
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+</script>
+
+</body>
+</html>

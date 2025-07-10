@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Felisberto</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .background-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .background-layer, .base-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      top: 0;
+      left: 0;
+      transition: opacity 2s ease;
+    }
+
+    .base-layer {
+      opacity: 0;
+    }
+
+    .content-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+      transition: opacity 1.5s ease;
+      z-index: 2;
+    }
+
+    .main-title {
+      font-size: 5vw;
+      margin-bottom: 2vh;
+      font-weight: 700;
+    }
+
+    .main-subtitle {
+      font-size: 2.5vw;
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .main-subtitle:hover {
+      background-color: rgba(255,255,255,0.1);
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor">
+    <div class="background-container">
+      <img src="Resources/Gif/Niebla.gif" class="background-layer" />
+      <img src="Resources/Scenarios/Escaleras.png" class="base-layer" />
+    </div>
+
+    <div class="content-layer">
+      <h1 class="main-title">Felisberto</h1>
+      <p class="main-subtitle">Iniciar</p>
+    </div>
+  </div>
+
+  <script>
+    if (document.querySelector('.background-layer')) {
+      document.addEventListener('DOMContentLoaded', () => {
+        const content = document.querySelector('.content-layer');
+        const bgLayer = document.querySelector('.background-layer');
+        const baseLayer = document.querySelector('.base-layer');
+        const subtitle = document.querySelector('.main-subtitle');
+
+        function resetState() {
+          bgLayer.style.opacity = '1';
+          baseLayer.style.opacity = '0';
+          content.style.opacity = '1';
+        }
+
+        subtitle.addEventListener('click', () => {
+          bgLayer.style.opacity = '0';
+          content.style.opacity = '0';
+          baseLayer.style.opacity = '1';
+
+          setTimeout(() => {
+            window.location.href = 'escaleras.html';
+          }, 1500);
+        });
+
+        window.addEventListener('pageshow', (event) => {
+          if (event.persisted) {
+            resetState();
+            window.location.reload();
+          }
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

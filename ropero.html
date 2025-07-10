@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Interacción SVG Adaptable</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zona-interactiva {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .zona-interactiva path {
+      fill: transparent;
+      stroke: transparent;
+      pointer-events: visiblePainted;
+      cursor: pointer;
+      transition: fill 0.2s ease;
+    }
+
+    .zona-interactiva path:hover {
+      fill: rgba(255, 255, 255, 0.177);
+      stroke: #ffaa0000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+
+    .imagen-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .imagen-flotante img {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+    }
+
+    .video-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .video-flotante video {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contenedor">
+  <img class="fondo" src="Resources/Scenarios/ropero.png" alt="Fondo">
+  
+  <!-- flechitapatras -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M1038 1736 c-42 -24 -96 -58 -120 -74 -37 -25 -248 -147 -426 -245
+      -32 -17 -49 -32 -43 -36 7 -5 -10 -37 -49 -92 -63 -88 -68 -99 -47 -99 11 0
+      172 -98 264 -161 81 -55 279 -177 300 -183 11 -4 27 -13 33 -21 7 -8 16 -15
+      21 -15 16 0 119 146 119 169 0 22 1 22 128 16 70 -3 320 -12 555 -21 l429 -16
+      42 41 c23 22 48 41 55 41 10 0 12 46 10 234 -2 129 -1 237 3 241 3 3 2 22 -3
+      41 -6 19 -8 38 -5 42 2 4 1 14 -4 22 -7 11 -32 12 -157 1 -370 -30 -996 -70
+      -1005 -65 -6 4 -8 36 -3 88 6 78 0 136 -14 136 -3 0 -41 -20 -83 -44z"/>
+    </g>
+  </svg>
+
+  <!-- Espejo -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M1178 9960 c-57 -10 -60 -11 -146 -85 l-71 -60 0 -345 c-1 -429 27
+      -6152 32 -6573 2 -169 6 -310 9 -313 6 -5 2629 265 2636 271 6 5 19 6300 13
+      6306 -12 11 -2388 809 -2407 808 -10 -1 -40 -5 -66 -9z"/>
+    </g>
+  </svg>
+
+  <!-- ropero -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoRopero()">
+      <path d="M8520 8625 c-102 -24 -257 -63 -345 -88 -348 -99 -640 -125 -1149
+      -103 l-209 9 -59 -29 c-41 -20 -60 -36 -65 -53 -7 -29 20 -6087 27 -6095 7 -7
+      2118 357 2259 390 117 27 130 25 131 -13 0 -7 6 -13 13 -13 6 0 261 59 566
+      132 467 110 556 129 565 117 6 -8 23 -13 39 -11 l27 3 0 177 c1 305 -50 4588
+      -56 4770 l-6 173 -37 24 c-21 14 -67 28 -111 35 -162 27 -264 72 -530 238
+      -180 113 -222 146 -265 207 -58 85 -150 109 -189 51 -11 -18 -27 -24 -73 -28
+      -32 -3 -80 -3 -108 1 -45 5 -50 8 -56 37 -12 59 -45 101 -87 108 -61 10 -89 6
+      -282 -39z"/>
+    </g>
+  </svg>
+
+  <!-- nota -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleImagenNota()">
+      <path d="M4530 1266 c-311 -78 -572 -145 -580 -148 -9 -3 18 -21 70 -45 135
+      -64 368 -163 382 -163 13 0 919 274 1098 332 52 17 98 33 102 37 7 6 -475 132
+      -497 130 -5 0 -264 -65 -575 -143z"/>
+    </g>
+  </svg>
+
+  <!-- ganchito -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M4300 8433 c-55 -20 -147 -109 -178 -173 -91 -191 -60 -413 77 -551
+      61 -60 123 -89 196 -89 102 0 222 83 273 190 91 191 60 413 -77 551 -85 85
+      -184 109 -291 72z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Overlay de fondo y nota ampliada -->
+<div id="notaOverlay" class="overlay" onclick="toggleImagenNota()"></div>
+<div id="imagenNota" class="imagen-flotante" onclick="toggleImagenNota()">
+  <img src="Resources\Notas\05.png" alt="Nota ampliada">
+</div>
+
+<!-- Overlay y video para el ropero -->
+<div id="roperoOverlay" class="overlay" onclick="toggleVideoRopero()"></div>
+<div id="videoRopero" class="video-flotante">
+  <video id="ropVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Ropero.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+
+<!-- Script para mostrar/ocultar nota, video y fondo -->
+<script>
+  let notaVisible = false;
+  let roperoVideoVisible = false;
+  const roperoVideo = document.getElementById('ropVideo');
+
+  // Precargamos los sonidos
+  const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const roperoSonido = new Audio("Resources/sonidos/ropero.mp3");
+
+  abrirSonido.preload = "auto";
+  cerrarSonido.preload = "auto";
+  roperoSonido.preload = "auto";
+
+  function toggleImagenNota() {
+    const imagen = document.getElementById('imagenNota');
+    const overlay = document.getElementById('notaOverlay');
+    notaVisible = !notaVisible;
+
+    const displayState = notaVisible ? 'block' : 'none';
+    imagen.style.display = displayState;
+    overlay.style.display = displayState;
+
+    // Intentamos reproducir el sonido adecuado
+    try {
+      if (notaVisible) {
+        abrirSonido.currentTime = 0;
+        abrirSonido.play();
+      } else {
+        cerrarSonido.currentTime = 0;
+        cerrarSonido.play();
+      }
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+
+  function toggleVideoRopero() {
+    const videoContainer = document.getElementById('videoRopero');
+    const overlay = document.getElementById('roperoOverlay');
+    roperoVideoVisible = !roperoVideoVisible;
+
+    const displayState = roperoVideoVisible ? 'block' : 'none';
+    videoContainer.style.display = displayState;
+    overlay.style.display = displayState;
+
+    if (roperoVideoVisible) {
+      roperoVideo.style.display = 'block';
+      roperoVideo.play();
+      try {
+        roperoSonido.currentTime = 0;
+        roperoSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido del ropero:", e);
+      }
+    } else {
+      roperoVideo.pause();
+      roperoVideo.currentTime = 0;
+      roperoVideo.style.display = 'none';
+    }
+  }
+</script>
+
+</body>
+</html>

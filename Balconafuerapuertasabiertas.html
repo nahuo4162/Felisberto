@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Interacción SVG Adaptable</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zona-interactiva {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .zona-interactiva path {
+      fill: transparent;
+      stroke: transparent;
+      pointer-events: visiblePainted;
+      cursor: pointer;
+      transition: fill 0.2s ease;
+    }
+
+    .zona-interactiva path:hover {
+      fill: rgba(255, 255, 255, 0.177);
+      stroke: #ffaa0000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+
+    .imagen-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .imagen-flotante img {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contenedor">
+  <img class="fondo" src="Resources/Scenarios/balconafuera.png" alt="Fondo">
+  
+  <!-- flechitapatras -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M7425 10126 c61 -24 215 -83 344 -131 l234 -89 -7 -2985 c-3 -1642
+      -9 -3205 -12 -3474 l-7 -487 -530 -458 -529 -457 568 -6 c313 -4 1489 -9 2614
+      -13 l2045 -7 -66 48 c-36 26 -306 221 -599 433 l-532 385 6 2330 c3 1282 6
+      2864 6 3516 l0 1185 335 120 336 121 -1532 6 c-843 4 -1814 7 -2158 6 l-626 0
+      110 -43z"/>
+    </g>
+  </svg>
+
+  <!-- puertabalcon -->  
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M6542 6108 l3 -4063 2973 -3 2973 -2 -6 4052 c-4 2229 -8 4059 -11
+      4066 -3 9 -605 12 -2969 12 l-2965 0 2 -4062z"/>
+    </g>
+  </svg>
+
+  <!-- baranda -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+      <path d="M18235 5156 c-19 -13 -19 -31 -2 -982 10 -533 18 -1005 19 -1049 l1
+      -80 -8689 4 c-4779 1 -8692 6 -8695 10 -3 3 0 392 9 864 13 800 13 864 -3 951
+      -13 75 -20 95 -35 99 -15 4 -114 -93 -429 -417 l-410 -421 -1 -2067 0 -2068
+      9600 0 9600 0 -1 1818 0 1817 -462 764 c-254 420 -467 766 -472 768 -6 2 -19
+      -3 -30 -11z"/>
+    </g>
+  </svg>
+
+  <!-- Biografia -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="mostrarImagen('Resources/Biografia/05.png')">
+      <path d="M433 4652 c-84 -59 -151 -112 -150 -118 1 -6 35 -46 75 -89 70 -74
+      74 -77 97 -65 28 15 338 343 336 357 0 4 -10 9 -21 9 -11 1 -58 4 -103 7 l-82
+      5 -152 -106z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Overlay e imagen flotante -->
+<div id="notaOverlay" class="overlay" onclick="cerrarImagen()"></div>
+<div id="imagenNota" class="imagen-flotante" onclick="cerrarImagen()">
+  <img id="imgNota" src="" alt="Imagen ampliada">
+</div>
+
+<!-- Script -->
+<script>
+  const overlay = document.getElementById('notaOverlay');
+  const imagen = document.getElementById('imagenNota');
+  const imgTag = document.getElementById('imgNota');
+
+  const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+
+  abrirSonido.preload = "auto";
+  cerrarSonido.preload = "auto";
+
+  function mostrarImagen(ruta) {
+    imgTag.src = ruta;
+    imagen.style.display = 'block';
+    overlay.style.display = 'block';
+
+    try {
+      abrirSonido.currentTime = 0;
+      abrirSonido.play();
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+
+  function cerrarImagen() {
+    imagen.style.display = 'none';
+    overlay.style.display = 'none';
+
+    try {
+      cerrarSonido.currentTime = 0;
+      cerrarSonido.play();
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+</script>
+
+</body>
+</html>

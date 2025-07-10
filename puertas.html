@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Interacción SVG Adaptable</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zona-interactiva {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .zona-interactiva path {
+      fill: transparent;
+      stroke: transparent;
+      pointer-events: visiblePainted;
+      cursor: pointer;
+      transition: fill 0.2s ease;
+    }
+
+    .zona-interactiva path:hover {
+      fill: rgba(255, 255, 255, 0.177);
+      stroke: #ffaa0000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+
+    .imagen-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .imagen-flotante img {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contenedor">
+  <img class="fondo" src="Resources/Scenarios/puertas.png" alt="Fondo">
+  
+  <!-- puerta balcon -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'balcon.html'">
+      <path d="M12675 9529 c-720 -48 -1311 -88 -1311 -88 -1 -1 -5 -533 -9 -1183
+      -8 -1355 -18 -1210 92 -1373 57 -85 139 -172 227 -240 l39 -31 -47 -70 c-52
+      -78 -55 -81 -206 -134 l-105 -38 -3 -183 c-2 -164 0 -193 20 -269 16 -63 21
+      -110 20 -181 l-1 -95 161 -17 c89 -10 164 -19 165 -21 2 -2 -4 -157 -14 -346
+      -12 -229 -15 -343 -8 -345 16 -5 2439 -74 2443 -70 3 2 -5 1038 -17 2302 -12
+      1264 -21 2337 -21 2386 l0 87 -57 -1 c-32 -1 -647 -41 -1368 -90z"/>
+    </g>
+  </svg>
+
+  <!-- puerta ropero -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'ropero.html'">
+      <path d="M6810 5640 l0 -5150 24 -12 c23 -10 30 -5 99 68 41 44 660 702 1376
+      1464 l1301 1384 0 3513 0 3513 -22 14 c-13 8 -164 91 -337 185 l-315 171
+      -1063 0 -1063 0 0 -5150z"/>
+    </g>
+  </svg>
+
+  <!-- escalera volver -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'escaleras.html'">
+      <path d="M2838 1897 l-2838 -1372 0 -262 0 -263 2588 0 2587 1 274 287 274
+      287 -2 240 c-1 132 -8 670 -16 1195 -8 525 -15 1024 -15 1108 0 83 -3 152 -7
+      151 -5 0 -1285 -618 -2845 -1372z"/>
+    </g>
+  </svg>
+
+  <!-- nota -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="mostrarNota('Resources/Notas/02.png')">
+      <path d="M10891 4424 c-62 -53 -110 -98 -108 -100 4 -4 940 -154 961 -154 13
+      0 39 114 53 230 l5 45 -378 38 c-209 21 -388 38 -400 37 -11 0 -71 -43 -133
+      -96z"/>
+    </g>
+  </svg>
+
+  <!-- bio -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="mostrarNota('Resources/Biografia/02.png')">
+      <path d="M17810 1137 c-157 -5 -287 -11 -289 -13 -2 -2 2 -60 9 -129 l14 -125
+      85 1 c137 1 690 25 695 30 3 2 -9 60 -27 127 l-32 122 -85 -2 c-47 -1 -213 -5
+      -370 -11z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Overlay + Imagen flotante -->
+<div id="notaOverlay" class="overlay" onclick="toggleImagenNota()"></div>
+<div id="imagenNota" class="imagen-flotante" onclick="toggleImagenNota()">
+  <img id="imagenNotaImg" src="" alt="Nota ampliada">
+</div>
+
+<!-- Scripts -->
+<script>
+  let notaVisible = false;
+  let notaActual = "";
+
+  const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+  abrirSonido.preload = "auto";
+  cerrarSonido.preload = "auto";
+
+  function mostrarNota(rutaImagen) {
+    const img = document.getElementById('imagenNotaImg');
+    img.src = rutaImagen;
+    notaActual = rutaImagen;
+    toggleImagenNota(true);
+  }
+
+  function toggleImagenNota(forzarMostrar = null) {
+    const imagen = document.getElementById('imagenNota');
+    const overlay = document.getElementById('notaOverlay');
+
+    if (forzarMostrar !== null) {
+      notaVisible = forzarMostrar;
+    } else {
+      notaVisible = !notaVisible;
+    }
+
+    const displayState = notaVisible ? 'block' : 'none';
+    imagen.style.display = displayState;
+    overlay.style.display = displayState;
+
+    try {
+      const sonido = notaVisible ? abrirSonido : cerrarSonido;
+      sonido.currentTime = 0;
+      sonido.play();
+    } catch (e) {
+      console.warn("Error al reproducir sonido:", e);
+    }
+  }
+</script>
+
+</body>
+</html>
