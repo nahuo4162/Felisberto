@@ -82,6 +82,27 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
       border-radius: 8px;
     }
+
+    .video-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .video-flotante video {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+      background-color: #000;
+    }
   </style>
 </head>
 <body>
@@ -100,17 +121,9 @@
     </g>
   </svg>
 
-  <!-- puertabalcon -->  
-  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
-    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
-      <path d="M6542 6108 l3 -4063 2973 -3 2973 -2 -6 4052 c-4 2229 -8 4059 -11
-      4066 -3 9 -605 12 -2969 12 l-2965 0 2 -4062z"/>
-    </g>
-  </svg>
-
   <!-- baranda -->
   <svg class="zona-interactiva" viewBox="0 0 1920 1080">
-    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoBaranda()">
       <path d="M18235 5156 c-19 -13 -19 -31 -2 -982 10 -533 18 -1005 19 -1049 l1
       -80 -8689 4 c-4779 1 -8692 6 -8695 10 -3 3 0 392 9 864 13 800 13 864 -3 951
       -13 75 -20 95 -35 99 -15 4 -114 -93 -429 -417 l-410 -421 -1 -2067 0 -2068
@@ -127,6 +140,16 @@
       5 -152 -106z"/>
     </g>
   </svg>
+
+  <!-- video balconafuera -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'balcon.html'">
+      <path d="M7674 10033 l309 -117 -6 -2610 c-4 -1435 -7 -3003 -8 -3485 l0 -876
+-557 -445 -557 -445 120 -8 c66 -4 1249 -6 2630 -5 l2510 3 -563 465 -562 465
+2 3474 3 3474 330 113 330 113 -2145 0 -2145 0 309 -116z"/>
+    </g>
+  </svg>
+
 </div>
 
 <!-- Overlay e imagen flotante -->
@@ -135,17 +158,38 @@
   <img id="imgNota" src="" alt="Imagen ampliada">
 </div>
 
+<!-- Overlay y video para baranda -->
+<div id="barandaOverlay" class="overlay" onclick="toggleVideoBaranda()"></div>
+<div id="videoBaranda" class="video-flotante">
+  <video id="barandaVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Balcon Afuera.mp4" type="video/mp4">
+  </video>
+</div>
+
 <!-- Script -->
 <script>
   const overlay = document.getElementById('notaOverlay');
   const imagen = document.getElementById('imagenNota');
   const imgTag = document.getElementById('imgNota');
+  
+  // Elementos para videos
+  const barandaVideo = document.getElementById('barandaVideo');
+  const barandaVideoContainer = document.getElementById('videoBaranda');
+  const barandaOverlay = document.getElementById('barandaOverlay');
+  
 
+  // Sonidos
   const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
   const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const barandaSonido = new Audio("Resources/sonidos/baranda.mp3");
 
+  // Precargar sonidos
   abrirSonido.preload = "auto";
   cerrarSonido.preload = "auto";
+  barandaSonido.preload = "auto";
+
+  // Estado de los videos
+  let barandaVideoVisible = false;
 
   function mostrarImagen(ruta) {
     imgTag.src = ruta;
@@ -171,6 +215,30 @@
       console.warn("Error al reproducir sonido:", e);
     }
   }
+
+  function toggleVideoBaranda() {
+    barandaVideoVisible = !barandaVideoVisible;
+
+    const displayState = barandaVideoVisible ? 'block' : 'none';
+    barandaVideoContainer.style.display = displayState;
+    barandaOverlay.style.display = displayState;
+
+    if (barandaVideoVisible) {
+      barandaVideo.style.display = 'block';
+      barandaVideo.play();
+      try {
+        barandaSonido.currentTime = 0;
+        barandaSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido de baranda:", e);
+      }
+    } else {
+      barandaVideo.pause();
+      barandaVideo.currentTime = 0;
+      barandaVideo.style.display = 'none';
+    }
+  }
+
 </script>
 
 </body>

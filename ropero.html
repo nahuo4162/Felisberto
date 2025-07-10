@@ -125,7 +125,7 @@
 
   <!-- Espejo -->
   <svg class="zona-interactiva" viewBox="0 0 1920 1080">
-    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoEspejo()">
       <path d="M1178 9960 c-57 -10 -60 -11 -146 -85 l-71 -60 0 -345 c-1 -429 27
       -6152 32 -6573 2 -169 6 -310 9 -313 6 -5 2629 265 2636 271 6 5 19 6300 13
       6306 -12 11 -2388 809 -2407 808 -10 -1 -40 -5 -66 -9z"/>
@@ -157,7 +157,7 @@
 
   <!-- ganchito -->
   <svg class="zona-interactiva" viewBox="0 0 1920 1080">
-    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'puertas.html'">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoGanchito()">
       <path d="M4300 8433 c-55 -20 -147 -109 -178 -173 -91 -191 -60 -413 77 -551
       61 -60 123 -89 196 -89 102 0 222 83 273 190 91 191 60 413 -77 551 -85 85
       -184 109 -291 72z"/>
@@ -180,20 +180,47 @@
   </video>
 </div>
 
-<!-- Script para mostrar/ocultar nota, video y fondo -->
+<!-- Overlay y video para el espejo -->
+<div id="espejoOverlay" class="overlay" onclick="toggleVideoEspejo()"></div>
+<div id="videoEspejo" class="video-flotante">
+  <video id="espVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Espejo.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+
+<!-- Overlay y video para el ganchito -->
+<div id="ganchitoOverlay" class="overlay" onclick="toggleVideoGanchito()"></div>
+<div id="videoGanchito" class="video-flotante">
+  <video id="ganVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Gancho.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+
+<!-- Script para mostrar/ocultar nota, videos y fondo -->
 <script>
   let notaVisible = false;
   let roperoVideoVisible = false;
+  let espejoVideoVisible = false;
+  let ganchitoVideoVisible = false;
+  
   const roperoVideo = document.getElementById('ropVideo');
+  const espejoVideo = document.getElementById('espVideo');
+  const ganchitoVideo = document.getElementById('ganVideo');
 
   // Precargamos los sonidos
   const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
   const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
   const roperoSonido = new Audio("Resources/sonidos/ropero.mp3");
+  const espejoSonido = new Audio("Resources/sonidos/espejo.mp3");
+  const ganchitoSonido = new Audio("Resources/sonidos/ganchito.mp3");
 
   abrirSonido.preload = "auto";
   cerrarSonido.preload = "auto";
   roperoSonido.preload = "auto";
+  espejoSonido.preload = "auto";
+  ganchitoSonido.preload = "auto";
 
   function toggleImagenNota() {
     const imagen = document.getElementById('imagenNota');
@@ -240,6 +267,56 @@
       roperoVideo.pause();
       roperoVideo.currentTime = 0;
       roperoVideo.style.display = 'none';
+    }
+  }
+
+  function toggleVideoEspejo() {
+    const videoContainer = document.getElementById('videoEspejo');
+    const overlay = document.getElementById('espejoOverlay');
+    espejoVideoVisible = !espejoVideoVisible;
+
+    const displayState = espejoVideoVisible ? 'block' : 'none';
+    videoContainer.style.display = displayState;
+    overlay.style.display = displayState;
+
+    if (espejoVideoVisible) {
+      espejoVideo.style.display = 'block';
+      espejoVideo.play();
+      try {
+        espejoSonido.currentTime = 0;
+        espejoSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido del espejo:", e);
+      }
+    } else {
+      espejoVideo.pause();
+      espejoVideo.currentTime = 0;
+      espejoVideo.style.display = 'none';
+    }
+  }
+
+  function toggleVideoGanchito() {
+    const videoContainer = document.getElementById('videoGanchito');
+    const overlay = document.getElementById('ganchitoOverlay');
+    ganchitoVideoVisible = !ganchitoVideoVisible;
+
+    const displayState = ganchitoVideoVisible ? 'block' : 'none';
+    videoContainer.style.display = displayState;
+    overlay.style.display = displayState;
+
+    if (ganchitoVideoVisible) {
+      ganchitoVideo.style.display = 'block';
+      ganchitoVideo.play();
+      try {
+        ganchitoSonido.currentTime = 0;
+        ganchitoSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido del ganchito:", e);
+      }
+    } else {
+      ganchitoVideo.pause();
+      ganchitoVideo.currentTime = 0;
+      ganchitoVideo.style.display = 'none';
     }
   }
 </script>

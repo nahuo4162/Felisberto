@@ -82,6 +82,27 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
       border-radius: 8px;
     }
+
+    .video-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .video-flotante video {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+      background-color: #000;
+    }
   </style>
 </head>
 <body>
@@ -98,7 +119,7 @@
 
   <!-- cuadro -->
   <svg class="zona-interactiva" viewBox="0 0 1920 1080">
-    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'escaleras.html'">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoCuadro()">
       <path d="M4427 9361 l-117 -36 0 -2654 c0 -1460 2 -2657 5 -2659 3 -3 68 -16 146 -29 l140 -24 1187 410 c653 225 1195 413 1205 416 16 7 17 83 17 1410 l0 1402 -1221 898 c-672 493 -1226 898 -1233 900 -6 1 -64 -14 -129 -34z"/>
     </g>
   </svg>
@@ -124,17 +145,33 @@
   <img id="imgNota" src="" alt="Imagen ampliada">
 </div>
 
+<!-- Overlay y video para el cuadro -->
+<div id="cuadroOverlay" class="overlay" onclick="toggleVideoCuadro()"></div>
+<div id="videoCuadro" class="video-flotante">
+  <video id="cuadroVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Pasillo.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+
 <!-- Script -->
 <script>
   const overlay = document.getElementById('notaOverlay');
   const imagen = document.getElementById('imagenNota');
   const imgTag = document.getElementById('imgNota');
+  const cuadroVideo = document.getElementById('cuadroVideo');
+  const cuadroVideoContainer = document.getElementById('videoCuadro');
+  const cuadroOverlay = document.getElementById('cuadroOverlay');
 
   const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
   const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const cuadroSonido = new Audio("Resources/sonidos/cuadro.mp3");
 
   abrirSonido.preload = "auto";
   cerrarSonido.preload = "auto";
+  cuadroSonido.preload = "auto";
+
+  let cuadroVideoVisible = false;
 
   function mostrarImagen(ruta) {
     imgTag.src = ruta;
@@ -158,6 +195,29 @@
       cerrarSonido.play();
     } catch (e) {
       console.warn("Error al reproducir sonido:", e);
+    }
+  }
+
+  function toggleVideoCuadro() {
+    cuadroVideoVisible = !cuadroVideoVisible;
+
+    const displayState = cuadroVideoVisible ? 'block' : 'none';
+    cuadroVideoContainer.style.display = displayState;
+    cuadroOverlay.style.display = displayState;
+
+    if (cuadroVideoVisible) {
+      cuadroVideo.style.display = 'block';
+      cuadroVideo.play();
+      try {
+        cuadroSonido.currentTime = 0;
+        cuadroSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido del cuadro:", e);
+      }
+    } else {
+      cuadroVideo.pause();
+      cuadroVideo.currentTime = 0;
+      cuadroVideo.style.display = 'none';
     }
   }
 </script>

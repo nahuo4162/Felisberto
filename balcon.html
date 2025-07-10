@@ -82,6 +82,27 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
       border-radius: 8px;
     }
+
+    .video-flotante {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-height: 80vh;
+      z-index: 999;
+      display: none;
+      cursor: pointer;
+    }
+
+    .video-flotante video {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      border-radius: 8px;
+      background-color: #000;
+    }
   </style>
 </head>
 <body>
@@ -102,6 +123,17 @@
     </g>
   </svg>
 
+  <!-- videobalcon -->
+  <svg class="zona-interactiva" viewBox="0 0 1920 1080">
+    <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="toggleVideoBalcon()">
+      <path d="M6404 10633 l-51 -4 -6 -2842 c-4 -1563 -7 -3857 -7 -5097 l0 -2255
+99 -58 99 -58 671 418 670 418 16 53 c9 28 17 52 18 53 1 0 737 18 1636 39
+l1633 38 601 -388 600 -388 91 59 91 58 3 658 c2 362 0 2531 -4 4821 l-6 4162
+-94 0 -93 0 -634 -420 -633 -420 -1612 130 -1612 130 -664 450 c-662 449 -664
+450 -713 448 -26 -1 -71 -3 -99 -5z"/>
+    </g>
+  </svg>
+  
   <!-- salidabalcón -->
   <svg class="zona-interactiva" viewBox="0 0 1920 1080">
     <g transform="translate(0,1080) scale(0.1,-0.1)" onclick="window.location.href = 'Balconafuerapuertasabiertas.html'">
@@ -134,17 +166,38 @@
   <img id="imgNota" src="" alt="Imagen ampliada">
 </div>
 
+<!-- Overlay y video para videobalcon -->
+<div id="balconOverlay" class="overlay" onclick="toggleVideoBalcon()"></div>
+<div id="videoBalcon" class="video-flotante">
+  <video id="balconVideo" width="80%" height="auto" controls style="display: none;">
+    <source src="Videos\Balcon Adentro.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+
 <!-- Script -->
 <script>
   const overlay = document.getElementById('notaOverlay');
   const imagen = document.getElementById('imagenNota');
   const imgTag = document.getElementById('imgNota');
+  
+  // Elementos para video balcon
+  const balconVideo = document.getElementById('balconVideo');
+  const balconVideoContainer = document.getElementById('videoBalcon');
+  const balconOverlay = document.getElementById('balconOverlay');
 
+  // Sonidos
   const abrirSonido = new Audio("Resources/sonidos/Notas.mp3");
   const cerrarSonido = new Audio("Resources/sonidos/Notas.mp3");
+  const balconSonido = new Audio("Resources/sonidos/balcon.mp3");
 
+  // Precargar sonidos
   abrirSonido.preload = "auto";
   cerrarSonido.preload = "auto";
+  balconSonido.preload = "auto";
+
+  // Estado del video
+  let balconVideoVisible = false;
 
   function mostrarImagen(ruta) {
     imgTag.src = ruta;
@@ -168,6 +221,29 @@
       cerrarSonido.play();
     } catch (e) {
       console.warn("Error al reproducir sonido:", e);
+    }
+  }
+
+  function toggleVideoBalcon() {
+    balconVideoVisible = !balconVideoVisible;
+
+    const displayState = balconVideoVisible ? 'block' : 'none';
+    balconVideoContainer.style.display = displayState;
+    balconOverlay.style.display = displayState;
+
+    if (balconVideoVisible) {
+      balconVideo.style.display = 'block';
+      balconVideo.play();
+      try {
+        balconSonido.currentTime = 0;
+        balconSonido.play();
+      } catch (e) {
+        console.warn("Error al reproducir sonido del balcón:", e);
+      }
+    } else {
+      balconVideo.pause();
+      balconVideo.currentTime = 0;
+      balconVideo.style.display = 'none';
     }
   }
 </script>
